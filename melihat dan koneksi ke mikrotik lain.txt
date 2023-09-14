@@ -1,0 +1,3 @@
+koneksi ke mikrotik lain yg tersambung
+
+Menu : IP --> Neighbor

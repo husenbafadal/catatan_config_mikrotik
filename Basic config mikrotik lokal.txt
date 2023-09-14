@@ -1,0 +1,63 @@
+Basic Config Mikrotik Lokal
+
+1. Lihat jumlah ethernet :
+   a. Menu : Interfaces --> TAB : Ethernet
+   b. tentukan topologi yang diinginkan. bisa hanya di angan-angan saja.
+
+2. Membuat Bridge
+   a. Menu : Bridge
+   b. Tambah --> Setting Nama Bridge, contoh : Bridge-lokal
+   c. Apply -- OK
+   d. masuk TAB : Ports
+   e. Tambah --> 
+      isian : Interfaces, pilih port Ethernet selain Ethernet 1, karena Ethernet 1 untuk WAN
+      isian : Bridge, pilih nama bridge, contoh : Bridge-lokal
+   f. Apply -- Ok
+
+3. Setting DHCP Client untuk port WAN / Ethernet 1
+   a. Menu : IP --> DHCP Client
+   b. Tambah --> isian : Interfaces, pilih port ethernet, contoh : ethernet 1. jika ethernet 1 dibuat bridge, maka pilih saja bridge nya.
+   c. Apply -- OK
+
+4. Pemberian IP Address pada port dhcp server. agar setting dhcp server bisa berjalan.
+   a. Menu  :Ip --> Address
+   b. Tambah --> 
+      isian Address, isikan ip adress untuk port tsb lengkap dg subnetnya. contoh : 192.168.20.1/24
+      isian Interface, pilih port yang akan bertugas memberikan dhcp server.
+   c. Apply -- Ok. Lanjut ke setting dhcp server.
+
+4. Setting DHCP Server untuk port LAN / port dalam Bridge Lokal
+   a. Menu : IP --> DHCP Server
+   b. Tombol : DHCP Setup --> di next-next saja. aman.
+
+5. Setting DNS
+   Jika Ip addressnya didapat dari DHCP client, maka DNS nya otomatis diambilkan dari server dhcp, jd gk perlu setting dns.
+   Namun jika ip addressnya pakai ip static, maka setting DNS harus dilakukan. caranya : 
+   a. Menu IP --> DNS
+   b. masukkan DNS menggunakan DNS server atau open DNS, yaitu 8.8.8.8
+   c. Apply -- Ok
+
+6. Setting NAT
+   a. Menu  : IP --> Firewall
+   b. TAB : NAT, Tambah -->  
+        isian : Chain, pilih srcnat
+        isian  : Out. Interface : pilih port yang menuju ke gateway. biasanya ether 1.
+      TAB : Action --> isian : action, pilih : masquerade
+   d. Apply - Ok
+      
+7. Simple Queue dengan script
+   a. Melihat lokasi script (disini masih kosong / blum ada konfigurasi)
+      Menu : Queues
+      
+   b. Memasukkan script untuk queues : 
+      Menu : System --> Scripts
+      Tambah -->
+      isian Source : 
+		:for x from 10 to 254 do={/queue simple add name="queue-$x" max-limit=768k/768k target="192.168.100.$x"}
+	  
+	  Terjemah kode script : lakukan perulangan untuk IP (setelah segmen) .10 - .254, yaitu : simple queue dengan nama "queue-[nomer urut IP], limit maksimal upload 768 kbps, download 768 kbps. target segemen IP adalah 192.168.100"
+
+   c. Apply -- Ok
+   d. kembali ke jendela utama script, pilih script yang muncul / sudah dibuat tadi, kemudian tekan tombol : 
+      Tombol : Run Script.
+      maka secara otomatis hasilnya akan muncul di jendela utama Menu --> Queues  

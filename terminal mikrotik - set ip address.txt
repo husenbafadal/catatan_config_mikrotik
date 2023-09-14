@@ -1,0 +1,28 @@
+terminal mikrotik - 
+
+a. set ip address
+   --> ip address add address=10.101.1.4/28 interface=ether1
+   edit : 
+   --> ip address set address=10.101.1.4/28 interface=ether1 number=[nomor_flag]
+   remove : 
+   --> ip address remove [nomor_flag]. ex : ip address remove 0
+
+b. Gateway
+   --> ip route add dst-address=0.0.0.0/0 gateway=10.101.1.1
+   remove
+   --> ip route remove [nomor_flag]
+
+c. DNS
+   --> ip dns set servers=10.101.1.1 allow-remote-requests=yes
+   can not remove. edit only : 
+   --> ip dns set servers=0.0.0.0 allow-remote-requests=no
+
+d. NAT
+   --> ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
+   --> ip firewall nat add chain=srcnat action=masquerade
+   remove
+   --> ip firewall nat remove 0
+
+e. Identity
+   --> System Identity set name=mikrotik-kedua
+   can not remove. edit only.

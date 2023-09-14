@@ -1,0 +1,40 @@
+Setting PPPOE Server
+
+Langkah singkat : 
+1. tentukan port brp yg akan melayani pppoe-server.
+2. berikan ip address pd port unt layanan pppoe-server tsb.
+3. Menu : IP --> Pool, tambahkan range ip untuk keperluan pembuatan profil.
+   misal,, name : pool_pppoeserver_3M, Address : 192.168.1.2-192.168.1.50
+   jika rencananya nanti ada 5 profil, maka buatlah ip pool ke lima-limanya.
+
+4. Buat Profil
+   Menu : PPP, 
+   TAB : Profiles. 
+		 Tambah -> 
+		    TAB : General, name : prof-3M. 
+						  local address : isikan ip address port yg melayani pppoe server. ip tunggal tanpa prefix.
+						  remote address : pilih nama profil yg sdh dibuat td.
+			TAB : Limit, Rate Limir (rx/tx) : 3M/3M
+	Apply--Ok
+
+5. Buat pppoe server
+   a. Buat nama layanan pppoe server
+	   Menu : PPP
+	   TAB : PPPoe Server
+			 Tambah -> name : [nama_sembarang]
+					   interface : pilih port yg digunakan unt pppoe server (point no.1 di atas)
+	   Apply -- Ok
+    
+    b. buat akun untuk pppoe client nantinya.
+       Menu : PPP
+	   TAB : Secrets
+			 Tambah -> name : [username unt login], 
+			           pasword : [password unt login]
+					   service : pilih pppoe
+					   Local address : [ip port yg melayani pppoe server]
+					   remote address : [ip port gateway mikrotik, misal ip pada port ether 1]
+	   Apply -- Ok
+                            
+                            
+                            
+                            

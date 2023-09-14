@@ -1,0 +1,104 @@
+cara menghubungkan 2 mikrotik menggunakan VLAN, dengan mikrotik yang ke-2 sebagai switch. 
+dan selteah konfigurasi selesai, untuk mengakses mikrotik yang ke-2 maka kabel utp dari komputer dipasang di switch sebelum mikrotik utama.
+
+
+Topologi : 
+Sumber Internet --> Switch --> Mikrotik 1 --> Mikrotik 2.
+
+Gambaran Konfigurasi :  
+  a. Switch dihubungkan ke  :
+     -> sumber Internet, 
+     -> Mikrotik 1
+     -> Laptop (untuk konfigurasi awal di mikrotik 1, 
+        selanjutnya laptop dihubungkan ke mikrotik 2 unt konfig mikrotik 2)
+        
+  a. Mikrotik 1 (utama)
+     -- port ether 1 terhubung ke Switch. dan IP nya Disetting DHCP client.
+     -- port ether 2-4 dijadikan LAN dengan DHCP Server.
+     -- port ether 5 dihubungkan ke mikrotik 2 pada port ether 1.
+
+  b. Mikrotik 2 
+     -- port ether 1 dihubungkan dengan port ether 5 pada mikrotik utama.
+     -- port ether 2 IP Address static, dan melayani dhcp server
+     -- port ether 3 Ip Address static, dan melayani dhcp server
+     -- port ether 4 dibiarkan untuk keperluan konfigurasi langsung ke laptop.
+
+
+Cara Konfigurasi : 
+1. konfigurasi pada mikrotik 1 (utama). 
+
+   a. lakukan basic config lebih dulu, shg mikrotik utama terhubung ke internet dan dapat melayani dhcp server melalui port 2-4. sedangkan port 5 akan dikonfigurasi sbgai VLAN
+
+   b. Menu : Interfaces, Tab : VLAN. buatlah VLAN dengan nama dan ID yg seragam. 
+      misal : nama VLAN = vlan1, maka Vlan ID nya = 1.
+      interface -> pilih ether 5. di sini 1 VLAN = 1 port pd mikrotik ke-2, shg jika akan mengkonfigurasi 2 port pd mikrotik ke-2, maka VLAN nya juga buat 2. semuanya pakai interface ether 5. selanjutnya pada Tab : Interface, akan muncul VLAN yg td qt buat. posisinya di bawah ether 5.
+   
+   c. Beri IP Address pada setiap VLAn yg telah dibuat d atas. 
+      Menu :IP --> Address. 
+      Tambah --> 
+         isian Address, isikan IP Address beserta subnetnya, misal : 192.168.10.1/24
+         isian Interface, pilih VLAN yg qt buat td.
+      lakukan hal yg sama untuk semua VLAN yg telah qt buat td. 
+   
+   d. Setting DHCP Server pada setiap VLAN.
+      setelah semua VLAn diberi IP Address, maka selanjutnya setting DHCP Server pd setiap VLAN.
+      Menu : IP --> DHCP Server. 
+      Tekan tombol : DHCP Setup, pilih nama VLAN yang akan disetting dhcp server. 
+                     selanjutnya di next-next saja.
+   
+2. konfigurasi pada mikrotik ke-2. 
+
+   a. Buat 1 nama bridge untuk ether 1 sampai ether 3 (ether 1 sampai 3 masuk dlam 1 nama bridge)
+      Menu : bridge,
+      Tambah --> isian : name, isikan nama bridge, bisa diisi sembarang nama. 
+                 Apply -- Ok.
+      Tab : Port, masukkan satu per satu port ether 1 sampai ether 3 dalam nama bridge yg telah dibuat tsb.pastikan opsi : Hardware offload telah dicentang. klo belum ya dicentang dlu.
+         Apply -- Ok.
+      
+   b. Menu Switch, 
+      Tab : VLAN
+           Tambah --> isian : VLAN ID, diisi ID Vlan yg telah qt buat di mikrotik utama.
+                         jika qt buat 3 VLAN, maka qt buat 3x 1 per satu.
+                         jd disini qt isi dg salah satu ID vlan dulu.
+                 isian Port, 
+                   - pilih ether 1. karena ether 1 terhubung langsung ke mikrotik utama. kemudian tambah lagi isian port dg cara klik segitiga kebawah disamping kotak isian port.
+                   - isian port ke 2 pilih ether 2.
+                     artinya port ether 1 di trunking dengan port ether 2.
+                 Apply -- OK.
+                 
+            Lakukan lagi / tambah VLAN lagi untuk port ether 1 ke ether 3.
+               Apply -- Ok
+               
+       Tab : Port, setting masing-masing interface.
+             a. klik 2x pada port ether 1.
+                isian : VLAN Mode, pilih : Secure
+                isian : VLAN Header, pilih : Add if missing
+                Default ID : 0
+			    Apply -- Ok
+			    
+			 b. klik 2 x pada port Ether 2
+			    isian : VLAN Mode, pilih : Secure
+                isian : VLAN Header, pilih : Always Strip
+                Default ID : isikan id vlan, misal : 1
+			    Apply -- Ok
+			 
+			 c. klik 2 x pada port Ether 3
+			    isian : VLAN Mode, pilih : Secure
+                isian : VLAN Header, pilih : Always Strip
+                Default ID : isikan id vlan, misal : 2
+			    Apply -- Ok
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+

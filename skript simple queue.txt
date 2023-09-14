@@ -1,0 +1,9 @@
+tempat memasukkan script : 
+  --> Menu : System --> Script
+
+contoh script : 
+:for x from 10 to 254 do={/queue simple add name="queue-$x" max-limit=768k/768k target="192.168.100.$x"}
+
+
+melihat konfig hasil script : 
+  --> Menu : Queues

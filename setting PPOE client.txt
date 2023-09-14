@@ -1,0 +1,21 @@
+PPOE Client : 
+adalah memberikan ip address otomatis pada client dari PPPOE server.
+
+cara : 
+--> Menu : Interface
+      Tambah --> PPOE Client
+		   Tab
+			 isian : name, isikan nama sembarang
+			 isian : interface : isikan interface utama. 
+					 misal : ether 1
+					 jika ether 1 masuk bridge, maka masukkan nama bride nya.
+		   TAB : Dial out       
+			 isian : user, isikan username dari pppoe server
+			 isian : password, isikan password dari pppoe server
+			 beri tanda centang pada use peer DNS
+			 beri tanda centang pada Add default route
+			 isian : default route distance, isikan nomer prioritas gateway, misal : 1
+			 Tekan Tombol Apply 
+		   TAB : Status, lihat status Iptime, apakah ada isian waktu online atau tidak. jika ada maka berhasil.
+		         jika tidka berhasil, periksa kembali user dan password.
+   

@@ -1,0 +1,44 @@
+menghubungkan 2 mikrotik dengan VLAN,
+mikrotik ke-1 dan ke-2 masing-masing dapat dhcp client sendiri2 dari sumber internet.
+
+topologi : 
+  -> sumber internet --> Switch --> Mikrotik 1 --> Mikrotik 2
+  -> Switch --> mikrotik 1 ether 1  (M1-E1)
+  -> Mikrotik 1 ether 5 (M1-E5) --> mikrotik 2 ether 1
+
+Langkah-langkah konfigurasi : 
+  -> M1-E1 dapat ip address dari sumber internet melalui dhcp client
+  -> M1-E2-4 di bridge, nama bridge misalnya : bridge-lan1. dan dibuat menjadi dhcp server
+  -> M1-E5 dibuat VLAN dg nama : 'VLAN1' dan ID : '1'
+  -> VLAN1 dan Ether 1 (M1-E1) kemudian di bridge, diberi nama misal : bridge-WAN. agar ether 1 dan vlan di ether 5 isinya sama.
+  -> beri ip address pada ether 5 agar nantinya bisa berkomuniksi dengan ether 1 di mikrotik 2. misal : 192.168.1.2/29
+  
+  -> M2-E1 dapat ip address dari sumber internet melalui dhcp client
+  -> M2-E2-3 di bridge, nama bridge misalnya : bridge-lan2. dan dibuat menjadi dhcp server
+  -> M2-E1 dibuat VLAN dg nama : 'VLAN1' dan ID : '1' (samakan namanya dg VLAN di M1-E5 di atas agar bisa terkoneksi)
+
+
+Jika IP addressnya menggunakan Ip Static, maka langkah-langkahnya adalah : 
+-> beri ip address secara manual. dari menu IP --> Address
+-> Setting Gateway. dari menu Ip --> Routes. Tambah, isian Dst.Address, biarkan 0. dan isian gateway, isikn dg ip gateway server.
+
+
+Langkah-langkah Spesifik : 
+1. masuk Ke mikrotik 1. kabel dari laptop bisa ke switch atau ke mikrotik 1 ether 2 atau ether 3 / 4/ / 5.
+2. berikan ip address pada ether 1 lewat dhcp client. gateway dan DNS tak perlu disetting krena otomatis dari dhcp.
+3. buat bridge-lan untuk port ether 2-4.
+4. berikan ip address untuk bridge lan.
+5. setup dhcp server untuk bridge lan.
+6. konfig NAT masquerade. general -> out.interface dikosongi dlu. nanti akan di isi dg nama bride wan (port ether 1 dan nama_vlan dari ether 5)
+7. test koneksi. jika ok, lanjut ke langkah dbawah ini.
+8. buat VLAN dari menu interface. set : nama vlan, VLAN ID, interface arahkan ke ether 5.
+9. buat bride-wan untuk port ether 1 dan vlan(nama_vlan).
+10. ubah NAT, general-->out.interface : nama_vlan.
+
+11. masuk ke mikrotik 2. kabel dari laptop bisa ttp di switch. interface M1-E5 dihubungkan ke M2-E1.
+12. Buat Vlan dari menu interface, set nama vlan dan vlan id nya disamakan dengan di mikrotik 1 tadi. interfacenya pilih ether 1. 
+13. buat bride-lan dan masukkan port 2-3. kemudian berikan ip address. lalu setup dhcp server untuk bridge lan ini.
+14. beri ip address untuk interface nama_vlan melalui menu IP-->dhcp client.
+15. seting nat, masquerade, out interface arahkan ke nama_vlan.
+16. tes koneksi.
+
